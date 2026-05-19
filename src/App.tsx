@@ -154,43 +154,21 @@ const Lightbox = ({ memory, onClose }: { memory: Memory; onClose: () => void }) 
         initial={{ scale: 0.9, y: 20 }}
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.9, y: 20 }}
-        className="relative z-10 w-full max-w-4xl bg-white rounded-[32px] md:rounded-[48px] overflow-hidden shadow-2xl flex flex-col md:flex-row max-h-[90vh]"
+        className="relative z-10 w-full max-w-3xl bg-white rounded-[32px] md:rounded-[48px] overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
       >
         <button 
           onClick={onClose}
-          className="absolute top-6 right-6 z-20 p-3 bg-black/10 hover:bg-black/20 rounded-full text-black transition-colors backdrop-blur-sm"
+          className="absolute top-6 right-6 z-20 p-3 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors backdrop-blur-sm"
         >
           <X size={24} />
         </button>
 
-        <div className="flex-1 min-h-[300px] md:min-h-[500px] relative">
+        <div className="w-full relative bg-black flex items-center justify-center">
           <img 
             src={memory.image} 
             alt={memory.title}
-            className="w-full h-full object-cover"
+            className="w-full h-auto object-contain max-h-[90vh]"
           />
-        </div>
-        
-        <div className="w-full md:w-[350px] p-8 md:p-12 flex flex-col justify-center space-y-6 bg-background">
-          <div className="space-y-2">
-            <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-bold uppercase tracking-widest inline-block">
-              Captured Moment
-            </span>
-            <h3 className="text-3xl font-display text-primary leading-tight">{memory.title}</h3>
-          </div>
-          
-          <div className="h-px w-12 bg-primary/20" />
-          
-          <p className="text-on-surface/80 leading-relaxed italic text-lg">
-            "{memory.note}"
-          </p>
-
-          <footer className="pt-4 flex items-center gap-3">
-             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                <Heart size={20} fill="currentColor" />
-             </div>
-             <span className="text-xs font-semibold uppercase tracking-wider text-primary/40">Forever & Always</span>
-          </footer>
         </div>
       </motion.div>
     </motion.div>
@@ -216,7 +194,7 @@ const MemoryCard = ({ memory, onSelect }: { memory: Memory; onSelect: () => void
       >
         {/* Front */}
         <div className="absolute inset-0 bg-white p-4 rounded-[32px] shadow-sm backface-hidden flex flex-col group border border-primary/5">
-          <div className="aspect-[4/5] rounded-[24px] overflow-hidden relative mb-4 flex-grow">
+          <div className="aspect-[4/5] rounded-[24px] overflow-hidden relative mb-3 flex-grow">
             <img 
               src={memory.image} 
               alt={memory.title}
@@ -235,11 +213,7 @@ const MemoryCard = ({ memory, onSelect }: { memory: Memory; onSelect: () => void
               </div>
             </div>
           </div>
-          <div className="px-2 space-y-1">
-            <h3 className="font-bold text-lg text-primary">{memory.title}</h3>
-            <p className="text-sm text-on-surface/60 font-medium italic">{memory.note}</p>
-          </div>
-          <div className="mt-4 flex justify-between items-center px-1">
+          <div className="mt-auto flex justify-between items-center px-1 pb-1">
             <div className="flex gap-1">
               <Star size={10} className="text-primary/20" />
               <Star size={10} className="text-primary/20" />
@@ -513,8 +487,7 @@ export default function App() {
                   <p className="text-lg md:text-xl text-on-surface/90 leading-loose italic">
                     "Every moment apart is just another moment closer to when we'll be together again. 
                     I find myself looking at our photos and playing our songs just to feel your presence. 
-                    This distance is temporary, but what we have is forever. I'm counting every second, 
-                    until your hand is in mine again..."
+                    This distance is temporary, but what we have is forever."
                   </p>
 
                   <div className="flex justify-center gap-4 pt-4">
