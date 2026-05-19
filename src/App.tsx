@@ -5,9 +5,10 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
-import { Heart, Play, Pause, SkipBack, SkipForward, Volume2 } from "lucide-react";
+import { Heart, Menu as MenuIcon, Play, Pause, SkipBack, SkipForward, Volume2 } from "lucide-react";
 
 export default function App() {
+  const [scrolled, setScrolled] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -75,6 +76,17 @@ export default function App() {
     setCurrentTime(clickedValue);
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   const memories = [
     {
       id: 1,
@@ -98,7 +110,23 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background text-on-surface">
-      <main>
+      {/* Header */}
+      <header className={`fixed top-0 w-full z-50 transition-all duration-500 px-6 h-16 flex items-center justify-between ${scrolled ? 'bg-background/80 backdrop-blur-md shadow-sm' : 'bg-transparent'}`}>
+        <div className="flex items-center gap-2">
+          <motion.div
+            animate={{ scale: [1, 1.15, 1] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <Heart className="w-6 h-6 text-primary" fill="currentColor" />
+          </motion.div>
+          <span className="font-serif font-semibold text-xl text-primary tracking-tight">Our Story</span>
+        </div>
+        <button className="p-2 hover:bg-primary/5 rounded-full transition-colors text-primary">
+          <MenuIcon className="w-6 h-6" />
+        </button>
+      </header>
+
+      <main className="pb-24 lg:pb-0">
         {/* Hero Section */}
         <section className="relative h-[85vh] flex items-center justify-center overflow-hidden">
           <motion.div 
@@ -108,6 +136,7 @@ export default function App() {
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuA8I9aL3TOXjjRuWs4gkHLs8e3Rh0q5Zf3HcTR6lB0asu-Ev1mOSUSDrmPSgZdJbOddJ25VYAuwVzsLgevLJtSJy2HCnwDimhQ4bGuf4DxcGy1AwC0yNqnjT51El1gddCdQiIWsUrQ_NFu1asa1aqyjIBCQVa3mjSB8BQ-eKdSvSVynQxvVzJlcRGELmLJ28uU7qHmvEJD1kV9IY28Y0NvW0r2QqmS86hDrMNsUHXCfXeL_b8W3cd8xPPZ1F9nCsREq6ZYrAm9LlPjH')" }}
           />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background" />
           
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
@@ -154,9 +183,11 @@ export default function App() {
         {/* Memory Gallery */}
         <section className="px-6 py-24 overflow-hidden">
           <div className="max-w-6xl mx-auto">
-            <div className="mb-16">
-              <h2 className="font-serif text-3xl md:text-4xl text-on-surface mb-2">Our Memories</h2>
-              <p className="text-on-surface-variant font-medium">Frozen moments in time, waiting for new ones.</p>
+            <div className="flex justify-between items-end mb-16">
+              <div>
+                <h2 className="font-serif text-3xl md:text-4xl text-on-surface mb-2">Our Memories</h2>
+                <p className="text-on-surface-variant font-medium">Frozen moments in time, waiting for new ones.</p>
+              </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8 pt-6">
