@@ -1,38 +1,65 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Pacifico&display=swap');
 
 @theme {
-  --font-serif: "Playfair Display", serif;
-  --font-sans: "Montserrat", sans-serif;
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Pacifico", cursive;
 
-  --color-primary: #7b4e00;
-  --color-primary-container: #996515;
-  --color-on-primary-container: #fff3e8;
+  --color-primary: #ff4d94; /* Hello Kitty Pink */
+  --color-primary-variant: #ff85b3;
+  --color-secondary: #ffffff;
+  --color-accent: #000000;
   
-  --color-secondary: #7b5454;
-  --color-secondary-container: #fecbcb;
-  --color-on-secondary-container: #7a5354;
-
-  --color-background: #fff8f7;
-  --color-surface: #ffffff;
-  --color-on-surface: #241919;
-  --color-on-surface-variant: #514537;
+  --color-background: #fff0f5; /* Lavender Blush (very light pink) */
+  --color-surface: rgba(255, 255, 255, 0.7);
+  --color-on-surface: #2d3436;
   
-  --color-outline: #837566;
-  --color-outline-variant: #d5c4b2;
-
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
   --radius-3xl: 2rem;
+  --radius-full: 9999px;
+
+  --shadow-kitty: 0 10px 30px rgba(255, 77, 148, 0.2);
 }
 
 @layer base {
   body {
-    @apply bg-background text-on-surface font-sans;
+    @apply bg-background text-on-surface font-sans overflow-x-hidden;
   }
 }
 
-.memory-frame {
-  @apply p-3 pb-12 bg-surface shadow-xl transition-transform duration-500 ease-out;
-  box-shadow: 0 12px 32px rgba(153, 101, 21, 0.12);
+.frosted-glass {
+  @apply backdrop-blur-xl bg-white/40 border border-white/30;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+.kitty-bounce {
+  animation: kitty-bounce 2s ease-in-out infinite;
+}
+
+@keyframes kitty-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
