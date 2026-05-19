@@ -486,7 +486,7 @@ export default function App() {
                   
                   <p className="text-lg md:text-xl text-on-surface/90 leading-loose italic">
                     "Every moment apart is just another moment closer to when we'll be together again. 
-                    I find myself looking at our photos and playing our songs just to feel your presence. 
+                    I find myself looking at your photos and playing our songs just to feel your presence. 
                     This distance is temporary, but what we have is forever."
                   </p>
 
