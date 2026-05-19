@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
-import { Heart, Menu as MenuIcon, Play, Pause, SkipBack, SkipForward, Volume2 } from "lucide-react";
+import { Heart, Play, Pause, SkipBack, SkipForward, Volume2 } from "lucide-react";
 
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
@@ -121,9 +121,7 @@ export default function App() {
           </motion.div>
           <span className="font-serif font-semibold text-xl text-primary tracking-tight">Our Story</span>
         </div>
-        <button className="p-2 hover:bg-primary/5 rounded-full transition-colors text-primary">
-          <MenuIcon className="w-6 h-6" />
-        </button>
+
       </header>
 
       <main className="pb-24 lg:pb-0">
