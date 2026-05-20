@@ -33,7 +33,7 @@ interface Memory {
 
 // --- Components ---
 
-const EntryGate = ({ onOpen }: { onOpen: () => void; key?: string }) => {
+const EntryGate = ({ name, onOpen }: { name: string; onOpen: () => void; key?: string }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -69,7 +69,7 @@ const EntryGate = ({ onOpen }: { onOpen: () => void; key?: string }) => {
           >
             <Cat size={48} className="text-primary" />
           </motion.div>
-          <h1 className="text-4xl md:text-5xl font-display text-primary">A Message for Rimjhim</h1>
+          <h1 className="text-4xl md:text-5xl font-display text-primary">A Message for {name}</h1>
           <p className="text-on-surface/60 font-medium">Click the envelope to see what's inside...</p>
         </div>
 
@@ -247,7 +247,7 @@ const MemoryCard = ({ memory, onSelect }: { memory: Memory; onSelect: () => void
           </p>
           
           <div className="mt-8 pt-6 border-t border-white/10 w-full relative z-10">
-            <span className="font-display text-sm opacity-60 italic">Your favorite kitty</span>
+            <span className="font-display text-sm opacity-60 italic">Yours forever</span>
           </div>
         </div>
       </motion.div>
@@ -287,7 +287,19 @@ const FloatingElement = ({ emoji, delay }: FloatingElementProps) => {
   );
 };
 
-export default function App() {
+interface PersonConfig {
+  name: string;
+  songData: {
+    title: string;
+    artist: string;
+    image: string;
+    audioUrl: string;
+  };
+  memories: Memory[];
+  message: string;
+}
+
+function LoveApp({ config }: { config: PersonConfig }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -295,37 +307,12 @@ export default function App() {
   const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const songData = {
-    title: "Bairan",
-    artist: "Banjaare",
-    image: "https://c.saavncdn.com/238/Bairan-Unknown-2026-20260223182954-500x500.jpg",
-    audioUrl: "https://aac.saavncdn.com/238/a7604f7d49918d0e11520cc03e33c267_320.mp4",
-  };
-
-  const memories: Memory[] = [
-    {
-      id: 1,
-      title: "The First Smile",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC-bwXhB5UOH0_XS1qWiRBWtTQ3kyEmWERui6bOvSuHEF_-m89uCLhGCgpUUEOm-dnISSlRZTc014mhMRdO2w_lUV4H8WXA75s_52mTwF4JSzmXc-HDC1QPXb2HKMyABsBk3AQaB8orEVcFoAAVD5cObquq0-LVoriHbttyQdAoUmEBXb7Z9T5RMU6hrotUDdFR5zKSe0F95xWoEfWSUtLw8OJlWdt93MJvhq7XH0eioXe-hX3-c_4EpfXN79zXKgeKY5uqSymIyXm6",
-      note: "That day everything changed ✨"
-    },
-    {
-      id: 2,
-      title: "Warm Hugs",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDGO6A7BoRg_xO3g3ifdth3I5N4rcU-PERA8-lx9ZWVfcERP9umkS2F6_L-Yxf7GHEGB4Sxug0HHww5A4dpCG3-uUHRyBG4NNXPT6wt4pxE2Yn4GAm2xexiTFTGmXPDb2z9PF5MxUStftCc1vylaZ3POtKbibkRyxHH21SdSAwcKKgW8MGkNt39oD9gvKWBigCjUrI0tGSWgpvLOJKhL5BXkSsErt8ykxGfoFwtbZgnOAMXN2hckYm4LI3o6cWrrV0crHF1OrX_te5d",
-      note: "Safety found in your arms ❤️"
-    },
-    {
-      id: 3,
-      title: "Forever Us",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBYGYUwQxdbqq13758nW9Jiiv4ZdTRXFub7cp8KJySjS44WVvH--MGGJbk-Vny8YFQ5CkBPsQzr8McOiLiExjEJ_YdT3SEd68_X4gcSwVhPMCcLBLdYJACO7zuUMOxge8U_ytfFPuLEguvpIJp5Nnoj8SJSbh_mrVzJHiBTj3eEo1bgyjg9zS6QVn8QyzRuQC8fbsh-1Y-6H6NIJCVqN-qvvyi4avsPh8OHiu2GWwxV1qTQyU84dOdtO4KR05LT58_eVTyAt9JhAhMc",
-      note: "Together, always and forever 🎀"
-    }
-  ];
-
   useEffect(() => {
     if (!audioRef.current) {
-      audioRef.current = new Audio(songData.audioUrl);
+      audioRef.current = new Audio(config.songData.audioUrl);
+    } else {
+      audioRef.current.src = config.songData.audioUrl;
+      audioRef.current.load();
     }
     const audio = audioRef.current;
     const updateTime = () => setCurrentTime(audio.currentTime);
@@ -344,7 +331,7 @@ export default function App() {
       audio.removeEventListener("loadedmetadata", updateDuration);
       audio.removeEventListener("ended", handleEnded);
     };
-  }, []);
+  }, [config.songData.audioUrl]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -365,7 +352,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-background relative overflow-hidden flex flex-col items-center">
       <AnimatePresence mode="wait">
-        {!isOpen && <EntryGate key="gate" onOpen={() => setIsOpen(true)} />}
+        {!isOpen && <EntryGate key="gate" name={config.name} onOpen={() => setIsOpen(true)} />}
       </AnimatePresence>
 
       <AnimatePresence>
@@ -482,12 +469,10 @@ export default function App() {
                     <MessageCircleHeart size={48} className="text-primary" />
                   </motion.div>
 
-                  <h2 className="text-3xl md:text-4xl font-display text-primary">My Dearest Rimjhim</h2>
+                  <h2 className="text-3xl md:text-4xl font-display text-primary">My Dearest {config.name}</h2>
                   
                   <p className="text-lg md:text-xl text-on-surface/90 leading-loose italic">
-                    "Every moment apart is just another moment closer to when we'll be together again. 
-                    I find myself looking at your photos and playing our songs just to feel your presence. 
-                    This distance is temporary, but what we have is forever."
+                    "{config.message}"
                   </p>
 
                   <div className="flex justify-center gap-4 pt-4">
@@ -506,7 +491,7 @@ export default function App() {
                 </div>
 
                 <div className="flex overflow-x-auto gap-8 pb-8 snap-x no-scrollbar -mx-6 px-6">
-                  {memories.map((memory, i) => (
+                  {config.memories.map((memory, i) => (
                     <motion.div
                       key={memory.id}
                       initial={{ opacity: 0, scale: 0.9, y: 30 }}
@@ -550,7 +535,7 @@ export default function App() {
                         className="w-48 h-48 md:w-64 md:h-64 rounded-full border-8 border-white p-2 shadow-kitty bg-white overflow-hidden"
                       >
                         <img 
-                          src={songData.image} 
+                          src={config.songData.image} 
                           alt="Album Art" 
                           className="w-full h-full object-cover rounded-full"
                         />
@@ -568,8 +553,8 @@ export default function App() {
                         <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-bold uppercase tracking-widest mb-4 inline-block">
                           Now Playing
                         </span>
-                        <h3 className="text-3xl md:text-4xl font-display text-primary">{songData.title}</h3>
-                        <p className="text-on-surface/60 font-medium tracking-wide uppercase text-sm mt-1">{songData.artist}</p>
+                        <h3 className="text-3xl md:text-4xl font-display text-primary">{config.songData.title}</h3>
+                        <p className="text-on-surface/60 font-medium tracking-wide uppercase text-sm mt-1">{config.songData.artist}</p>
                       </div>
 
                       {/* Progress */}
@@ -642,4 +627,83 @@ export default function App() {
       </AnimatePresence>
     </div>
   );
+}
+
+const rimjhimConfig: PersonConfig = {
+  name: "Rimjhim",
+  songData: {
+    title: "Bairan",
+    artist: "Banjaare",
+    image: "https://c.saavncdn.com/238/Bairan-Unknown-2026-20260223182954-500x500.jpg",
+    audioUrl: "https://aac.saavncdn.com/238/a7604f7d49918d0e11520cc03e33c267_320.mp4",
+  },
+  memories: [
+    {
+      id: 1,
+      title: "The First Smile",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC-bwXhB5UOH0_XS1qWiRBWtTQ3kyEmWERui6bOvSuHEF_-m89uCLhGCgpUUEOm-dnISSlRZTc014mhMRdO2w_lUV4H8WXA75s_52mTwF4JSzmXc-HDC1QPXb2HKMyABsBk3AQaB8orEVcFoAAVD5cObquq0-LVoriHbttyQdAoUmEBXb7Z9T5RMU6hrotUDdFR5zKSe0F95xWoEfWSUtLw8OJlWdt93MJvhq7XH0eioXe-hX3-c_4EpfXN79zXKgeKY5uqSymIyXm6",
+      note: "That day everything changed ✨"
+    },
+    {
+      id: 2,
+      title: "Warm Hugs",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDGO6A7BoRg_xO3g3ifdth3I5N4rcU-PERA8-lx9ZWVfcERP9umkS2F6_L-Yxf7GHEGB4Sxug0HHww5A4dpCG3-uUHRyBG4NNXPT6wt4pxE2Yn4GAm2xexiTFTGmXPDb2z9PF5MxUStftCc1vylaZ3POtKbibkRyxHH21SdSAwcKKgW8MGkNt39oD9gvKWBigCjUrI0tGSWgpvLOJKhL5BXkSsErt8ykxGfoFwtbZgnOAMXN2hckYm4LI3o6cWrrV0crHF1OrX_te5d",
+      note: "Safety found in your arms ❤️"
+    },
+    {
+      id: 3,
+      title: "Forever Us",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBYGYUwQxdbqq13758nW9Jiiv4ZdTRXFub7cp8KJySjS44WVvH--MGGJbk-Vny8YFQ5CkBPsQzr8McOiLiExjEJ_YdT3SEd68_X4gcSwVhPMCcLBLdYJACO7zuUMOxge8U_ytfFPuLEguvpIJp5Nnoj8SJSbh_mrVzJHiBTj3eEo1bgyjg9zS6QVn8QyzRuQC8fbsh-1Y-6H6NIJCVqN-qvvyi4avsPh8OHiu2GWwxV1qTQyU84dOdtO4KR05LT58_eVTyAt9JhAhMc",
+      note: "Together, always and forever 🎀"
+    }
+  ],
+  message: "Every moment apart is just another moment closer to when we'll be together again. I find myself looking at your photos and playing our songs just to feel your presence. This distance is temporary, but what we have is forever."
+};
+
+const manasviConfig: PersonConfig = {
+  name: "Manasvi",
+  songData: {
+    title: "Dhoom Taana",
+    artist: "Vishal & Shekhar, Shreya Ghoshal, Abhijeet",
+    image: "https://c.saavncdn.com/179/Om-Shanti-Om-Hindi-2007-20241205141724-500x500.jpg",
+    audioUrl: "https://aac.saavncdn.com/179/13bfd74d8ab4bc191331ff580129d7b7_320.mp4"
+  },
+  memories: [
+    {
+      id: 1,
+      title: "Our Spark ✨",
+      image: "https://res.cloudinary.com/dj5hhott5/image/upload/v1779294500/yewxsvqdbi9lppqtrv9u.jpg",
+      note: "The way we shine together."
+    },
+    {
+      id: 2,
+      title: "Night Out ❤️",
+      image: "https://res.cloudinary.com/dj5hhott5/image/upload/v1779294498/y3mmhm80muso50wcqjml.jpg",
+      note: "Every moment with you is magic."
+    },
+    {
+      id: 3,
+      title: "Us 🎀",
+      image: "https://res.cloudinary.com/dj5hhott5/image/upload/v1779294497/falwlcrqdrr8bo5gqlfq.jpg",
+      note: "Forever isn't long enough."
+    }
+  ],
+  message: "Every moment with you feels like a scene from a classic movie. You've brought so much color into my life, and I can't wait for our next chapter together. You're my Dhoom Taana! ❤️"
+};
+
+export default function App() {
+  const [path, setPath] = useState(window.location.pathname);
+
+  useEffect(() => {
+    const handleLocationChange = () => setPath(window.location.pathname);
+    window.addEventListener("popstate", handleLocationChange);
+    return () => window.removeEventListener("popstate", handleLocationChange);
+  }, []);
+
+  if (path.includes("/rimjhim")) {
+    return <LoveApp config={rimjhimConfig} />;
+  }
+
+  // Default to Manasvi for root or any other path
+  return <LoveApp config={manasviConfig} />;
 }
